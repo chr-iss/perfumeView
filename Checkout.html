@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - PerfumeView</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .checkout-container {
+            padding: 3rem 0;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+        }
+
+        .checkout-form {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .checkout-form h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #6d5b97;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section h3 i {
+            color: #6d5b97;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6d5b97;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(109, 91, 151, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .order-summary {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .order-summary h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #6d5b97;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .order-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .order-item-details {
+            flex: 1;
+        }
+
+        .order-item-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-item-price {
+            color: #6d5b97;
+            font-weight: 600;
+        }
+
+        .order-item-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .order-totals {
+            border-top: 2px solid #e1e1e1;
+            padding-top: 1.5rem;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .total-row.final {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #6d5b97;
+            border-top: 1px solid #e1e1e1;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(109, 91, 151, 0.3);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            color: #6d5b97;
+        }
+
+        .continue-shopping {
+            display: inline-block;
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(109, 91, 151, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6d5b97;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .success-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .success-content p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(109, 91, 151, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e1e1e1;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #6d5b97;
+        }
+
+        footer {
+            background-color: #2c2c2c;
+            color: #ddd;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .order-summary {
+                position: static;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-controls {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+
+            .success-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>PerfumeView</h1>
+            <p>Complete Your Purchase</p>
+            <div class="header-controls">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Shop
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="checkout-container">
+            <!-- Checkout Form -->
+            <div class="checkout-form">
+                <h2>Shipping Information</h2>
+                
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Personal Details</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" class="form-control" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-truck"></i> Shipping Address</h3>
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="postalCode">Postal Code *</label>
+                            <input type="text" id="postalCode" class="form-control" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="country">Country *</label>
+                            <select id="country" class="form-control" required>
+                                <option value="">Select Country</option>
+                                <option value="ZA">South Africa</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div id="orderItems" class="order-items">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading your order...</p>
+                    </div>
+                </div>
+                <div class="order-totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">R0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping:</span>
+                        <span id="shipping">R0.00</span>
+                    </div>
+                    
+                    <div class="total-row final">
+                        <span>Total:</span>
+                        <span id="total">R0.00</span>
+                    </div>
+                </div>
+                <button class="checkout-btn" id="placeOrderBtn" disabled>
+                    <i class="fas fa-lock"></i> Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-content">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Order Confirmed!</h2>
+            <p>Thank you for your purchase. Your order has been successfully placed and will be processed shortly.</p>
+            <p><strong>Order ID: #<span id="orderId">0000</span></strong></p>
+            <div class="success-actions">
+                <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+                <button class="btn btn-secondary" id="printReceipt">Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 PerfumeView. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script>
+    // DOM Elements
+    const orderItems = document.getElementById('orderItems');
+    const subtotalEl = document.getElementById('subtotal');
+    const shippingEl = document.getElementById('shipping');
+    const totalEl = document.getElementById('total');
+    const placeOrderBtn = document.getElementById('placeOrderBtn');
+    const successModal = document.getElementById('successModal');
+    const orderIdEl = document.getElementById('orderId');
+    const printReceiptBtn = document.getElementById('printReceipt');
+
+    // Form elements
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+    const cityInput = document.getElementById('city');
+    const postalCodeInput = document.getElementById('postalCode');
+    const countryInput = document.getElementById('country');
+
+    // Cart data from localStorage
+    let cart = [];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, initializing checkout...');
+        loadCartItems();
+        setupEventListeners();
+        
+        // Try to pre-fill form from localStorage if available
+        loadCustomerInfo();
+    });
+
+    // Load cart items from localStorage
+    function loadCartItems() {
+        try {
+            const cartData = localStorage.getItem('perfumeCart');
+            console.log('Raw cart data from localStorage:', cartData);
+            
+            if (cartData) {
+                cart = JSON.parse(cartData);
+                console.log('Parsed cart items:', cart);
+                
+                // Validate cart structure
+                if (!Array.isArray(cart)) {
+                    console.error('Cart is not an array:', cart);
+                    cart = [];
+                    showEmptyCart();
+                    return;
+                }
+                
+                if (cart.length === 0) {
+                    console.log('Cart is empty');
+                    showEmptyCart();
+                } else {
+                    console.log(`Cart loaded with ${cart.length} items`);
+                    displayOrderItems();
+                    calculateTotals();
+                }
+            } else {
+                console.log('No cart data found in localStorage');
+                showEmptyCart();
+            }
+        } catch (error) {
+            console.error('Error loading cart from localStorage:', error);
+            cart = [];
+            showEmptyCart();
+        }
+    }
+
+    // Load customer info from localStorage if available
+    function loadCustomerInfo() {
+        try {
+            const customerInfo = localStorage.getItem('customerInfo');
+            if (customerInfo) {
+                const info = JSON.parse(customerInfo);
+                firstNameInput.value = info.firstName || '';
+                lastNameInput.value = info.lastName || '';
+                emailInput.value = info.email || '';
+                phoneInput.value = info.phone || '';
+                addressInput.value = info.address || '';
+                cityInput.value = info.city || '';
+                postalCodeInput.value = info.postalCode || '';
+                if (info.country) {
+                    countryInput.value = info.country;
+                }
+                console.log('Customer info loaded from localStorage');
+            }
+        } catch (error) {
+            console.error('Error loading customer info:', error);
+        }
+    }
+
+    // Save customer info to localStorage
+    function saveCustomerInfo() {
+        const customerInfo = {
+            firstName: firstNameInput.value.trim(),
+            lastName: lastNameInput.value.trim(),
+            email: emailInput.value.trim(),
+            phone: phoneInput.value.trim(),
+            address: addressInput.value.trim(),
+            city: cityInput.value.trim(),
+            postalCode: postalCodeInput.value.trim(),
+            country: countryInput.value
+        };
+        
+        localStorage.setItem('customerInfo', JSON.stringify(customerInfo));
+    }
+
+    // Display order items from localStorage cart
+    function displayOrderItems() {
+        let html = '';
+        
+        cart.forEach((item, index) => {
+            // Handle image URLs - use placeholder if not available
+            let imageUrl = item.image || item.imageUrl || item.img;
+            if (!imageUrl || !imageUrl.startsWith('http')) {
+                imageUrl = `https://via.placeholder.com/60x60/6d5b97/white?text=${encodeURIComponent(item.name ? item.name.substring(0, 2) : 'PF')}`;
+            }
+            
+            // Ensure all required properties exist
+            const itemName = item.name || item.productName || 'Unknown Product';
+            const itemPrice = parseFloat(item.price || item.productPrice || 0);
+            const itemQuantity = parseInt(item.quantity || item.qty || 1);
+            const itemTotal = itemPrice * itemQuantity;
+            
+            html += `
+                <div class="order-item" data-index="${index}">
+                    <img src="${imageUrl}" alt="${itemName}" class="order-item-image" 
+                         onerror="this.src='https://via.placeholder.com/60x60/f0eef6/6d5b97?text=PF'">
+                    <div class="order-item-details">
+                        <div class="order-item-name">${itemName}</div>
+                        <div class="order-item-price">R${itemPrice.toFixed(2)}</div>
+                        <div class="order-item-quantity">Qty: ${itemQuantity}</div>
+                        <div class="order-item-total">R${itemTotal.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        orderItems.innerHTML = html;
+    }
+
+    // Calculate order totals from localStorage cart data
+    function calculateTotals() {
+        const subtotal = cart.reduce((sum, item) => {
+            const price = parseFloat(item.price || item.productPrice || 0);
+            const quantity = parseInt(item.quantity || item.qty || 1);
+            return sum + (price * quantity);
+        }, 0);
+        
+        const shipping = 80; // Fixed R80 shipping
+        const total = subtotal + shipping;
+        
+        subtotalEl.textContent = `R${subtotal.toFixed(2)}`;
+        shippingEl.textContent = `R${shipping.toFixed(2)}`;
+        totalEl.textContent = `R${total.toFixed(2)}`;
+        
+        // Update order button state
+        checkFormValidity();
+        
+        console.log('Calculated totals:', { subtotal, shipping, total });
+    }
+
+    // Show empty cart state
+    function showEmptyCart() {
+        orderItems.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart" style="font-size: 48px; color: #6d5b97; margin-bottom: 16px;"></i>
+                <p style="font-size: 18px; color: #666; margin-bottom: 20px;">Your cart is empty</p>
+                <a href="index.html" class="continue-shopping" 
+                   style="display: inline-block; padding: 12px 24px; background: #6d5b97; color: white; 
+                          text-decoration: none; border-radius: 6px; font-weight: 500;">
+                    Continue Shopping
+                </a>
+            </div>
+        `;
+        
+        // Disable order button
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.textContent = 'Cart is Empty';
+        placeOrderBtn.style.backgroundColor = '#ccc';
+        placeOrderBtn.style.cursor = 'not-allowed';
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Form validation and auto-save
+        const formInputs = document.querySelectorAll('.form-control[required]');
+        formInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                checkFormValidity();
+                saveCustomerInfo(); // Auto-save on input
+            });
+            input.addEventListener('change', function() {
+                checkFormValidity();
+                saveCustomerInfo(); // Auto-save on change
+            });
+        });
+
+        // Place order button
+        placeOrderBtn.addEventListener('click', placeOrder);
+
+        // Print receipt
+        if (printReceiptBtn) {
+            printReceiptBtn.addEventListener('click', printReceipt);
+        }
+
+        // Close modal when clicking outside
+        if (successModal) {
+            successModal.addEventListener('click', (e) => {
+                if (e.target === successModal) {
+                    successModal.style.display = 'none';
+                    window.location.href = 'index.html';
+                }
+            });
+        }
+
+        // Save form data before unload
+        window.addEventListener('beforeunload', saveCustomerInfo);
+    }
+
+    // Check if form is valid
+    function checkFormValidity() {
+        const formInputs = document.querySelectorAll('.form-control[required]');
+        let isValid = true;
+        
+        // Check all required fields
+        formInputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+            }
+        });
+        
+        // Check if cart has items
+        if (cart.length === 0) {
+            isValid = false;
+        }
+        
+        // Update button state
+        placeOrderBtn.disabled = !isValid;
+        if (isValid) {
+            placeOrderBtn.style.backgroundColor = '#6d5b97';
+            placeOrderBtn.style.cursor = 'pointer';
+            placeOrderBtn.textContent = 'Place Order & WhatsApp';
+        } else {
+            placeOrderBtn.style.backgroundColor = '#ccc';
+            placeOrderBtn.style.cursor = 'not-allowed';
+            placeOrderBtn.textContent = cart.length === 0 ? 'Cart is Empty' : 'Please Fill All Fields';
+        }
+        
+        return isValid;
+    }
+
+    // Place order function - redirects to WhatsApp
+    function placeOrder() {
+        if (!checkFormValidity()) {
+            alert('Please fill in all required fields and ensure your cart is not empty.');
+            return;
+        }
+
+        // Show loading state
+        const originalText = placeOrderBtn.innerHTML;
+        placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        placeOrderBtn.disabled = true;
+        
+        // Get form values
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const address = addressInput.value.trim();
+        const city = cityInput.value.trim();
+        const postalCode = postalCodeInput.value.trim();
+        const country = countryInput.options[countryInput.selectedIndex].text;
+        
+        // Calculate totals from localStorage cart
+        const subtotal = cart.reduce((sum, item) => {
+            const price = parseFloat(item.price || item.productPrice || 0);
+            const quantity = parseInt(item.quantity || item.qty || 1);
+            return sum + (price * quantity);
+        }, 0);
+        const shipping = 80;
+        const total = subtotal + shipping;
+        
+        // Generate order ID
+        const orderId = 'PV' + Date.now().toString().slice(-6);
+        
+        // Save order to localStorage for history
+        saveOrderHistory(orderId, firstName, lastName, email, phone, total);
+        
+        // Create WhatsApp message
+        const whatsappMessage = createWhatsAppMessage(
+            orderId,
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+            city,
+            postalCode,
+            country,
+            cart,
+            subtotal,
+            shipping,
+            total
+        );
+        
+        // Encode message for URL
+        const encodedMessage = encodeURIComponent(whatsappMessage);
+        
+        // WhatsApp phone number
+        const whatsappNumber = '+27672889137';
+        
+        // Create WhatsApp URL
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        
+        // Simulate processing delay
+        setTimeout(() => {
+            // Clear cart from localStorage after successful order
+            localStorage.removeItem('perfumeCart');
+            
+            // Save successful order info
+            localStorage.setItem('lastOrder', JSON.stringify({
+                orderId: orderId,
+                total: total,
+                date: new Date().toISOString(),
+                items: cart.length
+            }));
+            
+            console.log('Order processed, redirecting to WhatsApp...');
+            
+            // Redirect to WhatsApp
+            window.location.href = whatsappUrl;
+        }, 1500);
+    }
+
+    // Save order to order history in localStorage
+    function saveOrderHistory(orderId, firstName, lastName, email, phone, total) {
+        try {
+            const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
+            
+            const order = {
+                id: orderId,
+                date: new Date().toISOString(),
+                customer: `${firstName} ${lastName}`,
+                email: email,
+                phone: phone,
+                total: total,
+                items: cart.length,
+                status: 'pending'
+            };
+            
+            orderHistory.unshift(order); // Add to beginning
+            localStorage.setItem('orderHistory', JSON.stringify(orderHistory.slice(0, 50))); // Keep last 50 orders
+        } catch (error) {
+            console.error('Error saving order history:', error);
+        }
+    }
+
+    // Create WhatsApp message with order details
+    function createWhatsAppMessage(orderId, firstName, lastName, email, phone, address, city, postalCode, country, cart, subtotal, shipping, total) {
+        let message = `🛍️ *NEW ORDER - PerfumeView* 🛍️\n\n`;
+        message += `*Order ID:* ${orderId}\n`;
+        message += `*Date:* ${new Date().toLocaleDateString('en-ZA')} ${new Date().toLocaleTimeString('en-ZA')}\n\n`;
+        
+        message += `*CUSTOMER DETAILS:*\n`;
+        message += `👤 Name: ${firstName} ${lastName}\n`;
+        message += `📧 Email: ${email}\n`;
+        message += `📞 Phone: ${phone}\n\n`;
+        
+        message += `*SHIPPING ADDRESS:*\n`;
+        message += `📍 Address: ${address}\n`;
+        message += `🏙️ City: ${city}\n`;
+        message += `📮 Postal Code: ${postalCode}\n`;
+        message += `🌍 Country: ${country}\n\n`;
+        
+        message += `*ORDER ITEMS:*\n`;
+        cart.forEach((item, index) => {
+            const itemName = item.name || item.productName || 'Unknown Product';
+            const itemPrice = parseFloat(item.price || item.productPrice || 0);
+            const itemQuantity = parseInt(item.quantity || item.qty || 1);
+            const itemTotal = itemPrice * itemQuantity;
+            
+            message += `${index + 1}. ${itemName}\n`;
+            message += `   💰 Price: R${itemPrice.toFixed(2)}\n`;
+            message += `   📦 Quantity: ${itemQuantity}\n`;
+            message += `   💵 Subtotal: R${itemTotal.toFixed(2)}\n\n`;
+        });
+        
+        message += `*ORDER SUMMARY:*\n`;
+        message += `📊 Subtotal: R${subtotal.toFixed(2)}\n`;
+        message += `🚚 Shipping: R${shipping.toFixed(2)}\n`;
+        message += `💳 *TOTAL: R${total.toFixed(2)}*\n\n`;
+        
+        message += `Thank you! 🎉\n`;
+        message += `This order was placed through the PerfumeView website.`;
+        
+        return message;
+    }
+
+    // Print receipt function
+    function printReceipt() {
+        const subtotal = cart.reduce((sum, item) => {
+            const price = parseFloat(item.price || item.productPrice || 0);
+            const quantity = parseInt(item.quantity || item.qty || 1);
+            return sum + (price * quantity);
+        }, 0);
+        const shipping = 80;
+        const total = subtotal + shipping;
+        
+        const receiptContent = `
+            <html>
+            <head>
+                <title>PerfumeView Receipt</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.4; }
+                    .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #6d5b97; padding-bottom: 10px; }
+                    .order-info { margin-bottom: 20px; }
+                    .items { margin: 20px 0; }
+                    .item { display: flex; justify-content: space-between; margin: 8px 0; padding: 5px 0; border-bottom: 1px solid #eee; }
+                    .totals { margin: 20px 0; }
+                    .total-row { display: flex; justify-content: space-between; margin: 8px 0; }
+                    .final-total { border-top: 2px solid #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 1.1em; }
+                    .thank-you { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-style: italic; color: #666; }
+                    .store-info { text-align: center; color: #6d5b97; margin-bottom: 10px; }
+                </style>
+            </head>
+            <body>
+                <div class="store-info">
+                    <h2>PerfumeView</h2>
+                    <p>Luxury Fragrances</p>
+                </div>
+                <div class="header">
+                    <h3>ORDER RECEIPT</h3>
+                </div>
+                <div class="order-info">
+                    <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-ZA')}</p>
+                    <p><strong>Time:</strong> ${new Date().toLocaleTimeString('en-ZA')}</p>
+                </div>
+                <div class="items">
+                    <h4>Items Ordered:</h4>
+                    ${cart.map(item => {
+                        const itemName = item.name || item.productName || 'Unknown Product';
+                        const itemPrice = parseFloat(item.price || item.productPrice || 0);
+                        const itemQuantity = parseInt(item.quantity || item.qty || 1);
+                        const itemTotal = itemPrice * itemQuantity;
+                        return `
+                            <div class="item">
+                                <span>${itemName} (x${itemQuantity})</span>
+                                <span>R${itemTotal.toFixed(2)}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>R${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping:</span>
+                        <span>R${shipping.toFixed(2)}</span>
+                    </div>
+                    <div class="total-row final-total">
+                        <span>Total Amount:</span>
+                        <span>R${total.toFixed(2)}</span>
+                    </div>
+                </div>
+                <div class="thank-you">
+                    <p>Thank you for your purchase!</p>
+                    <p>Your order has been received and will be processed shortly.</p>
+                </div>
+            </body>
+            </html>
+        `;
+        
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(receiptContent);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    }
+
+    // Debug function to check localStorage contents
+    function debugLocalStorage() {
+        console.log('=== LOCAL STORAGE DEBUG INFO ===');
+        console.log('perfumeCart:', localStorage.getItem('perfumeCart'));
+        console.log('customerInfo:', localStorage.getItem('customerInfo'));
+        console.log('orderHistory:', localStorage.getItem('orderHistory'));
+        console.log('lastOrder:', localStorage.getItem('lastOrder'));
+        console.log('=== END DEBUG INFO ===');
+    }
+
+    // Call debug function on load (remove in production)
+    setTimeout(debugLocalStorage, 1000);
+</script>
