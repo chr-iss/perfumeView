@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - PerfumeView</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            padding: 2.5rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #6d5b97;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(109, 91, 151, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #6d5b97 0%, #8a75b6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(109, 91, 151, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .back-link a {
+            color: #6d5b97;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #8a75b6;
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background-color: #efe;
+            color: #363;
+            border: 1px solid #cfc;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6d5b97;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                max-width: 100%;
+            }
+            
+            .login-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .login-form {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Admin Login</h1>
+            <p>Access the PerfumeView management panel</p>
+        </div>
+        
+        <div class="login-form">
+            <div id="alertMessage" class="alert"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="form-control" 
+                        placeholder="Enter your username" 
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-control" 
+                        placeholder="Enter your password" 
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Signing in...</p>
+                </div>
+                
+                <button type="submit" class="btn" id="loginButton">
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="back-link">
+                <a href="index.html">← Back to Perfume Catalog</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://vyvraejfnisavhdtbhlt.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5dnJhZWpmbmlzYXZoZHRiaGx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDIwNzAsImV4cCI6MjA3ODAxODA3MH0._awID6AzBW-b_KI4X8HsylY9fvMxag7fE73TSYNgihc';
+        
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // DOM elements
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginButton = document.getElementById('loginButton');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const alertMessage = document.getElementById('alertMessage');
+
+        // Show alert message
+        function showAlert(message, type = 'error') {
+            alertMessage.textContent = message;
+            alertMessage.className = `alert alert-${type}`;
+            alertMessage.style.display = 'block';
+        }
+
+        // Hide alert message
+        function hideAlert() {
+            alertMessage.style.display = 'none';
+        }
+
+        // Show loading state
+        function setLoading(isLoading) {
+            if (isLoading) {
+                loginButton.disabled = true;
+                loadingIndicator.style.display = 'block';
+                loginButton.textContent = 'Signing In...';
+            } else {
+                loginButton.disabled = false;
+                loadingIndicator.style.display = 'none';
+                loginButton.textContent = 'Sign In';
+            }
+        }
+
+        // Handle form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Basic validation
+            if (!username || !password) {
+                showAlert('Please enter both username and password');
+                return;
+            }
+            
+            setLoading(true);
+            hideAlert();
+            
+            try {
+                // Sign in with Supabase
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: username, // Using username as email for simplicity
+                    password: password
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (data.user) {
+                    // Successful login
+                    showAlert('Login successful! Redirecting...', 'success');
+                    
+                    // Store authentication state (you might want to use a more secure method)
+                    localStorage.setItem('adminAuthenticated', 'true');
+                    localStorage.setItem('adminUser', username);
+                    
+                    // Redirect to admin dashboard after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                }
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                // User-friendly error messages
+                if (error.message.includes('Invalid login credentials')) {
+                    showAlert('Invalid username or password. Please try again.');
+                } else if (error.message.includes('Email not confirmed')) {
+                    showAlert('Please verify your email address before logging in.');
+                } else {
+                    showAlert('Login failed. Please try again later.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // Check if user is already logged in (optional)
+        async function checkExistingSession() {
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (!error && data.session) {
+                    // User already has a valid session, redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (error) {
+                console.error('Session check error:', error);
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for existing session on page load
+            checkExistingSession();
+            
+            // Clear any existing authentication state
+            localStorage.removeItem('adminAuthenticated');
+            localStorage.removeItem('adminUser');
+            
+            // Focus on username field
+            usernameInput.focus();
+        });
+    </script>
+</body>
+</html>
