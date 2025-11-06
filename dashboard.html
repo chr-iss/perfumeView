@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PerfumeView</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6d5b97;
+            --primary-light: #8a75b6;
+            --secondary: #f8f9fa;
+            --text: #333;
+            --text-light: #666;
+            --border: #e1e1e1;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+
+        .logo span {
+            font-weight: 600;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid white;
+        }
+
+        .nav-links i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info span {
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .card h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(109, 91, 151, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload p {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload small {
+            color: var(--text-light);
+        }
+
+        #imagePreview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        #imagePreview img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(109, 91, 151, 0.3);
+        }
+
+        /* Perfumes List */
+        .perfumes-list {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .perfumes-list h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--secondary);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: var(--text);
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Perfume<span>View</span> Admin</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-plus-circle"></i> Add Perfume</a></li>
+                <li><a href="#"><i class="fas fa-list"></i> All Perfumes</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h2>Admin Dashboard</h2>
+                <div class="user-info">
+                    <span id="adminUsername">Admin User</span>
+                    <button class="btn btn-logout" id="logoutButton">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertMessage" class="alert"></div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <h3>Total Perfumes</h3>
+                    <div class="value" id="totalPerfumes">0</div>
+                </div>
+                <div class="card">
+                    <h3>This Month</h3>
+                    <div class="value" id="monthPerfumes">0</div>
+                </div>
+                <div class="card">
+                    <h3>Average Price</h3>
+                    <div class="value" id="avgPrice">$0.00</div>
+                </div>
+            </div>
+
+            <!-- Add Perfume Form -->
+            <div class="form-section">
+                <h3>Add New Perfume</h3>
+                <form id="perfumeForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="perfumeName">Perfume Name *</label>
+                            <input type="text" id="perfumeName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="perfumePrice">Price (R) *</label>
+                            <input type="number" id="perfumePrice" class="form-control" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="perfumeDescription">Description</label>
+                            <textarea id="perfumeDescription" class="form-control" placeholder="Describe the fragrance, notes, etc."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Perfume Image *</label>
+                            <div class="file-upload" id="fileUploadArea">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Click to upload or drag and drop</p>
+                                <small>PNG, JPG, JPEG up to 5MB</small>
+                                <input type="file" id="perfumeImage" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="imagePreview"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitButton">
+                        <i class="fas fa-plus-circle"></i> Add Perfume
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+
+            <!-- Perfumes List -->
+            <div class="perfumes-list">
+                <h3>All Perfumes</h3>
+                <div class="table-container">
+                    <table id="perfumesTable">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="perfumesTableBody">
+                            <!-- Perfumes will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Supabase JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://vyvraejfnisavhdtbhlt.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5dnJhZWpmbmlzYXZoZHRiaGx0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDIwNzAsImV4cCI6MjA3ODAxODA3MH0._awID6AzBW-b_KI4X8HsylY9fvMxag7fE73TSYNgihc';
+    
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // DOM elements
+    const perfumeForm = document.getElementById('perfumeForm');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const perfumeImage = document.getElementById('perfumeImage');
+    const imagePreview = document.getElementById('imagePreview');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const alertMessage = document.getElementById('alertMessage');
+    const submitButton = document.getElementById('submitButton');
+    const perfumesTableBody = document.getElementById('perfumesTableBody');
+    const logoutButton = document.getElementById('logoutButton');
+    const adminUsername = document.getElementById('adminUsername');
+
+    // Stats elements
+    const totalPerfumes = document.getElementById('totalPerfumes');
+    const monthPerfumes = document.getElementById('monthPerfumes');
+    const avgPrice = document.getElementById('avgPrice');
+
+    // Current user
+    let currentUser = null;
+
+    // Show alert message
+    function showAlert(message, type = 'success') {
+        alertMessage.textContent = message;
+        alertMessage.className = `alert alert-${type}`;
+        alertMessage.style.display = 'block';
+        
+        // Auto hide after 5 seconds
+        setTimeout(() => {
+            alertMessage.style.display = 'none';
+        }, 5000);
+    }
+
+    // Show loading state
+    function setLoading(isLoading) {
+        if (isLoading) {
+            loadingIndicator.style.display = 'block';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        } else {
+            loadingIndicator.style.display = 'none';
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-plus-circle"></i> Add Perfume';
+        }
+    }
+
+    // File upload handling
+    fileUploadArea.addEventListener('click', () => {
+        perfumeImage.click();
+    });
+
+    fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = '#6d5b97';
+        fileUploadArea.style.backgroundColor = '#f8f9fa';
+    });
+
+    fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.style.borderColor = '#e1e1e1';
+        fileUploadArea.style.backgroundColor = 'transparent';
+    });
+
+    fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = '#e1e1e1';
+        fileUploadArea.style.backgroundColor = 'transparent';
+        
+        if (e.dataTransfer.files.length) {
+            perfumeImage.files = e.dataTransfer.files;
+            handleImagePreview(e.dataTransfer.files[0]);
+        }
+    });
+
+    perfumeImage.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+            handleImagePreview(e.target.files[0]);
+        }
+    });
+
+    function handleImagePreview(file) {
+        if (!file.type.match('image.*')) {
+            showAlert('Please select an image file', 'error');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            showAlert('Image size should be less than 5MB', 'error');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Handle form submission
+    perfumeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('perfumeName').value.trim();
+        const price = parseFloat(document.getElementById('perfumePrice').value);
+        const description = document.getElementById('perfumeDescription').value.trim();
+        const imageFile = perfumeImage.files[0];
+        
+        // Validation
+        if (!name || !price || !imageFile) {
+            showAlert('Please fill in all required fields', 'error');
+            return;
+        }
+        
+        if (price <= 0) {
+            showAlert('Price must be greater than 0', 'error');
+            return;
+        }
+        
+        setLoading(true);
+        
+        try {
+            // Upload image to Supabase Storage
+            const imageName = `${Date.now()}-${imageFile.name}`;
+            const { data: imageData, error: imageError } = await supabase.storage
+                .from('perfume-images')
+                .upload(imageName, imageFile);
+            
+            if (imageError) {
+                throw new Error(`Image upload failed: ${imageError.message}`);
+            }
+            
+            // Get public URL for the image
+            const { data: publicUrlData } = supabase.storage
+                .from('perfume-images')
+                .getPublicUrl(imageName);
+            
+            // Insert perfume data into database
+            const { data, error } = await supabase
+                .from('perfumes')
+                .insert([
+                    {
+                        name: name,
+                        price: price,
+                        description: description,
+                        image_filename: publicUrlData.publicUrl,
+                        created_at: new Date().toISOString()
+                    }
+                ])
+                .select();
+            
+            if (error) {
+                throw error;
+            }
+            
+            // Success
+            showAlert('Perfume added successfully!');
+            perfumeForm.reset();
+            imagePreview.innerHTML = '';
+            
+            // Refresh the perfumes list and stats
+            fetchPerfumes();
+            fetchStats();
+            
+        } catch (error) {
+            console.error('Error adding perfume:', error);
+            showAlert(`Failed to add perfume: ${error.message}`, 'error');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // Fetch and display perfumes
+    async function fetchPerfumes() {
+        try {
+            const { data: perfumes, error } = await supabase
+                .from('perfumes')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                throw error;
+            }
+            
+            perfumesTableBody.innerHTML = '';
+            
+            if (perfumes.length === 0) {
+                perfumesTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            No perfumes found. Add your first perfume above.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            perfumes.forEach(perfume => {
+                const row = document.createElement('tr');
+                const createdDate = new Date(perfume.created_at).toLocaleDateString();
+                
+                row.innerHTML = `
+                    <td>
+                        <img src="${perfume.image_filename}" alt="${perfume.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                    </td>
+                    <td>${perfume.name}</td>
+                    <td>R${parseFloat(perfume.price).toFixed(2)}</td>
+                    <td>${createdDate}</td>
+                    <td class="actions">
+                        <button class="btn btn-edit" onclick="editPerfume(${perfume.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-delete" onclick="deletePerfume(${perfume.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                
+                perfumesTableBody.appendChild(row);
+            });
+            
+        } catch (error) {
+            console.error('Error fetching perfumes:', error);
+            perfumesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--danger);">
+                        Error loading perfumes. Please try again.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // Fetch dashboard statistics
+    async function fetchStats() {
+        try {
+            const { data: perfumes, error } = await supabase
+                .from('perfumes')
+                .select('*');
+            
+            if (error) {
+                throw error;
+            }
+            
+            // Total perfumes
+            totalPerfumes.textContent = perfumes.length;
+            
+            // This month's perfumes
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            const monthPerfumesCount = perfumes.filter(p => {
+                const perfumeDate = new Date(p.created_at);
+                return perfumeDate.getMonth() === currentMonth && perfumeDate.getFullYear() === currentYear;
+            }).length;
+            
+            monthPerfumes.textContent = monthPerfumesCount;
+            
+            // Average price
+            if (perfumes.length > 0) {
+                const totalPrice = perfumes.reduce((sum, p) => sum + parseFloat(p.price), 0);
+                const averagePrice = totalPrice / perfumes.length;
+                avgPrice.textContent = `R${averagePrice.toFixed(2)}`;
+            } else {
+                avgPrice.textContent = 'R0.00';
+            }
+            
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    }
+
+    // Edit perfume function
+    // Track editing state
+let editingPerfumeId = null;
+
+// Edit perfume function
+async function editPerfume(id) {
+    try {
+        const { data, error } = await supabase
+            .from('perfumes')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+
+        // Populate form fields
+        document.getElementById('perfumeName').value = data.name;
+        document.getElementById('perfumePrice').value = data.price;
+        document.getElementById('perfumeDescription').value = data.description || '';
+
+        imagePreview.innerHTML = `<img src="${data.image_filename}" alt="${data.name}">`;
+
+        // Set edit mode
+        editingPerfumeId = id;
+        submitButton.innerHTML = '<i class="fas fa-save"></i> Update Perfume';
+        showAlert('Edit mode: you can now update this perfume.', 'success');
+
+        // Scroll to the form
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('Error loading perfume for edit:', error);
+        showAlert('Failed to load perfume details.', 'error');
+    }
+}
+
+// Update form submission logic to handle edit or add
+perfumeForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('perfumeName').value.trim();
+    const price = parseFloat(document.getElementById('perfumePrice').value);
+    const description = document.getElementById('perfumeDescription').value.trim();
+    const imageFile = perfumeImage.files[0];
+
+    // Validation
+    if (!name || !price) {
+        showAlert('Please fill in all required fields', 'error');
+        return;
+    }
+
+    if (price <= 0) {
+        showAlert('Price must be greater than 0', 'error');
+        return;
+    }
+
+    setLoading(true);
+
+    try {
+        let imageUrl = null;
+
+        // If a new image is uploaded
+        if (imageFile) {
+            const imageName = `${Date.now()}-${imageFile.name}`;
+            const { data: imageData, error: imageError } = await supabase.storage
+                .from('perfume-images')
+                .upload(imageName, imageFile);
+
+            if (imageError) throw new Error(`Image upload failed: ${imageError.message}`);
+
+            const { data: publicUrlData } = supabase.storage
+                .from('perfume-images')
+                .getPublicUrl(imageName);
+
+            imageUrl = publicUrlData.publicUrl;
+        }
+
+        // 🔹 If editing existing perfume
+        if (editingPerfumeId) {
+            const updateData = {
+                name: name,
+                price: price,
+                description: description,
+                updated_at: new Date().toISOString(),
+            };
+
+            // Only update image if a new one was uploaded
+            if (imageUrl) updateData.image_filename = imageUrl;
+
+            const { error } = await supabase
+                .from('perfumes')
+                .update(updateData)
+                .eq('id', editingPerfumeId);
+
+            if (error) throw error;
+
+            showAlert('Perfume updated successfully!');
+            editingPerfumeId = null;
+            submitButton.innerHTML = '<i class="fas fa-plus-circle"></i> Add Perfume';
+        } 
+        // 🔹 Otherwise, add a new perfume
+        else {
+            if (!imageFile) {
+                showAlert('Please upload an image for the perfume', 'error');
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('perfumes')
+                .insert([
+                    {
+                        name: name,
+                        price: price,
+                        description: description,
+                        image_filename: imageUrl,
+                        created_at: new Date().toISOString()
+                    }
+                ])
+                .select();
+
+            if (error) throw error;
+
+            showAlert('Perfume added successfully!');
+        }
+
+        perfumeForm.reset();
+        imagePreview.innerHTML = '';
+        fetchPerfumes();
+        fetchStats();
+
+    } catch (error) {
+        console.error('Error submitting perfume:', error);
+        showAlert(`Failed to save perfume: ${error.message}`, 'error');
+    } finally {
+        setLoading(false);
+    }
+});
+
+
+    // Delete perfume function
+    async function deletePerfume(id) {
+        if (!confirm('Are you sure you want to delete this perfume? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const { error } = await supabase
+                .from('perfumes')
+                .delete()
+                .eq('id', id);
+            
+            if (error) {
+                throw error;
+            }
+            
+            showAlert('Perfume deleted successfully');
+            fetchPerfumes();
+            fetchStats();
+            
+        } catch (error) {
+            console.error('Error deleting perfume:', error);
+            showAlert('Failed to delete perfume', 'error');
+        }
+    }
+
+    // Logout function
+    logoutButton.addEventListener('click', async () => {
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+            
+            // Clear local storage and redirect
+            localStorage.removeItem('adminAuthenticated');
+            localStorage.removeItem('adminUser');
+            window.location.href = 'admin.html';
+            
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Force redirect even if there's an error
+            window.location.href = 'admin.html';
+        }
+    });
+
+    // Check authentication and initialize page
+    async function initializePage() {
+        try {
+            // Check if user is authenticated
+            const { data, error } = await supabase.auth.getSession();
+            
+            if (error || !data.session) {
+                window.location.href = 'admin.html';
+                return;
+            }
+            
+            // Set user info
+            currentUser = data.session.user;
+            adminUsername.textContent = currentUser.email || 'Admin User';
+            
+            // Load initial data
+            fetchPerfumes();
+            fetchStats();
+            
+        } catch (error) {
+            console.error('Initialization error:', error);
+            window.location.href = 'admin.html';
+        }
+    }
+
+    // Initialize the page when loaded
+    document.addEventListener('DOMContentLoaded', initializePage);
+</script>
