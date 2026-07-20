@@ -8,7 +8,7 @@ PerfumeView is a modern, responsive fragrance catalog and ordering website that 
 
 ## 📖 About
 
-PerfumeView was developed to demonstrate modern front-end web development and third-party API integration. The application combines an elegant user interface with a streamlined ordering process, allowing customers to browse available fragrances and instantly contact the seller via WhatsApp.
+PerfumeView was developed to demonstrate modern front-end web development and third party API integration. The application combines an elegant user interface with a streamlined ordering process, allowing customers to browse available fragrances and instantly contact the seller via WhatsApp.
 
 The project focuses on responsive design, usability, and providing a seamless customer experience across desktop and mobile devices.
 
@@ -34,7 +34,7 @@ The project focuses on responsive design, usability, and providing a seamless cu
 - HTML5
 - CSS3
 - JavaScript (ES6)
-- WhatsApp Click-to-Chat API
+- WhatsApp Click to Chat API
 - Git & GitHub
 - Netlify
 
@@ -50,18 +50,7 @@ Visit the live application here:
 
 ## 📂 Project Structure
 
-```
-PerfumeView/
-│
-├── assets/
-│   ├── css/
-│   ├── images/
-│   └── js/
-│
-├── index.html
-├── README.md
-└── favicon.ico
-```
+
 
 ---
 
